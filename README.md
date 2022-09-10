@@ -10,7 +10,7 @@
 
 ``` 0x75F37726D0ecEE5799F96287abf4880ff15472FC ```
 
-### NFT Contract Requirements
+### Contract Requirements
 
 ERC-721 Compliance Compatible
 
