@@ -1,6 +1,8 @@
 # NFT_Smart_Contract_ERC721
 
-## Opensea NFTs Collection Link : ``` https://testnets.opensea.io/Marvel_Cinematic_Universe ```
+## Opensea NFTs Collection Link :
+
+``` https://testnets.opensea.io/Marvel_Cinematic_Universe ```
 
 ### NFT Contract Requirements
 
