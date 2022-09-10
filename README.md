@@ -4,6 +4,8 @@
 
 ``` https://testnets.opensea.io/Marvel_Cinematic_Universe ```
 
+## Contract Deployed on: Rinkeby Testnet
+
 ### NFT Contract Requirements
 
 ERC-721 Compliance Compatible
