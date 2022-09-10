@@ -38,7 +38,7 @@ Platform minting is for platfrom admins only.
 
 If the platform limit is reached admins cannot mint NFTs.
 
-## What I need as deliveries:
+## What we need as deliveries:
 
 NFTs will be reserved with respect to limit i.e. 1 address can mint up to 5 NFTs.
 
