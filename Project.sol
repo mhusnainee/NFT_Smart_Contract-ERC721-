@@ -13,9 +13,6 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 
 contract MARVEL is ERC721, ERC721URIStorage, Pausable, Ownable {
 
-    using Counters for Counters.Counter;
-    Counters.Counter private _tokenIdCounter;
-
     /**
     * State variables:
     *
@@ -29,16 +26,16 @@ contract MARVEL is ERC721, ERC721URIStorage, Pausable, Ownable {
     * publicMintedNFTs to track the number of publicaly minted NFTs
     * pltformMintindNFTs to track the number of NFTs minted by admins
     */
-    string private baseURI;
+    string public baseURI;
     uint public totalLimit;
-    uint private whiteListedLimit;
-    uint private publicLimit;
-    uint private platformLimit;
-    bool private publicSale;
+    uint public whiteListedLimit;
+    uint public publicLimit;
+    uint public platformLimit;
+    bool public publicSale;
     uint public mintedNFTs;
-    uint private whitelistedMintedNFTs;
-    uint private publicMintedNFTs;
-    uint private pltformMintindNFTs;
+    uint public whitelistedMintedNFTs;
+    uint public publicMintedNFTs;
+    uint public pltformMintindNFTs;
 
     /**
     * Constructor with Token name MARVEL and symbol MCU
@@ -62,9 +59,9 @@ contract MARVEL is ERC721, ERC721URIStorage, Pausable, Ownable {
     * whiteListedAdmins to track whitelisted admins
     * NFTs to track NFTs or tokens
     */
-    mapping(address => bool) whiteListedUsers;
-    mapping(address => uint) perAddressMinting;
-    mapping(address => bool) whiteListedAdmins;
+    mapping(address => bool) public whiteListedUsers;
+    mapping(address => uint) public perAddressMinting;
+    mapping(address => bool) public whiteListedAdmins;
     mapping(uint => nftData) public NFTs;
 
     /**
@@ -179,14 +176,12 @@ contract MARVEL is ERC721, ERC721URIStorage, Pausable, Ownable {
     * Total minting limit limit should not be reached.
     * Per address minting limit of 5 NFTs should not be reached.
     */
-    function safeMint(address to, string memory name, string memory uri) private {
+    function safeMint(address to, uint _id, string memory name, string memory uri) private {
         if(mintedNFTs < totalLimit) {
             if (perAddressMinting[msg.sender] < 5) {
-                uint256 tokenId = _tokenIdCounter.current();
-                _tokenIdCounter.increment();
-                _safeMint(to, tokenId);
-                _setTokenURI(tokenId, string(abi.encode(baseURI, uri)));
-                NFTs[tokenId] = nftData(tokenId, name, uri);
+                _safeMint(to, _id);
+                _setTokenURI(_id, string(abi.encode(baseURI, uri)));
+                NFTs[_id] = nftData(_id, name, uri);
                 perAddressMinting[msg.sender] += 1;
                 mintedNFTs += 1;
             }
@@ -304,11 +299,11 @@ contract MARVEL is ERC721, ERC721URIStorage, Pausable, Ownable {
     * Whitelisted minting limit should not be reached.
     * Sender should be whitelisted user.
     */
-    function whitelistUserMinting(address _to,string memory _name, string memory _uri) public {
+    function whitelistUserMinting(address _to, uint _id, string memory _name, string memory _uri) public {
         require(!publicSale, "Can't mint when public sale is active");
         if (whitelistedMintedNFTs < whiteListedLimit) {
             if (whiteListedUsers[msg.sender]) {
-                safeMint(_to,_name, _uri);
+                safeMint(_to, _id, _name, _uri);
                 whitelistedMintedNFTs += 1;
             }
             else {
@@ -330,10 +325,10 @@ contract MARVEL is ERC721, ERC721URIStorage, Pausable, Ownable {
     * Public sale should be active.
     * Public minting limit should not be reached.
     */
-    function publicMinting(address _to,string memory _name, string memory _uri) public {
+    function publicMinting(address _to, uint _id, string memory _name, string memory _uri) public {
         if (publicMintedNFTs < publicLimit) {
             if (publicSale) {
-                safeMint(_to,_name, _uri);
+                safeMint(_to, _id, _name, _uri);
                 publicMintedNFTs += 1;
             }
             else {
@@ -355,10 +350,10 @@ contract MARVEL is ERC721, ERC721URIStorage, Pausable, Ownable {
     * Platform minting limit should not be reached.
     * Sender should be the whitelisted admin.
     */
-    function platformMinting(address _to,string memory _name, string memory _uri) public {
+    function platformMinting(address _to, uint _id, string memory _name, string memory _uri) public {
         if(pltformMintindNFTs < platformLimit) {
             if(whiteListedAdmins[msg.sender]) {
-                safeMint(_to,_name, _uri);
+                safeMint(_to, _id, _name, _uri);
                 pltformMintindNFTs += 1;
             }
             else {
