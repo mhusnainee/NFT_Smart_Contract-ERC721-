@@ -9,7 +9,6 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
 
 contract MARVEL is ERC721, ERC721URIStorage, Pausable, Ownable {
 
@@ -177,21 +176,17 @@ contract MARVEL is ERC721, ERC721URIStorage, Pausable, Ownable {
     * Per address minting limit of 5 NFTs should not be reached.
     */
     function safeMint(address to, uint _id, string memory name, string memory uri) private {
-        if(mintedNFTs < totalLimit) {
-            if (perAddressMinting[msg.sender] < 5) {
-                _safeMint(to, _id);
-                _setTokenURI(_id, string(abi.encode(baseURI, uri)));
-                NFTs[_id] = nftData(_id, name, uri);
-                perAddressMinting[msg.sender] += 1;
-                mintedNFTs += 1;
-            }
-            else {
-                revert perAddressLimit("Minting limit of 5 NFTs per address is reached");
-            }
-        }
-        else {
+        if(mintedNFTs >= totalLimit) {
             revert totalMintLimit("Total minting limit is reached");
         }
+        if (perAddressMinting[msg.sender] >= 5) {
+            revert perAddressLimit("Minting limit of 5 NFTs per address is reached");
+        }
+        _safeMint(to, _id);
+        _setTokenURI(_id, string(abi.encode(baseURI, uri)));
+        NFTs[_id] = nftData(_id, name, uri);
+        perAddressMinting[msg.sender] += 1;
+        mintedNFTs += 1;
     }
 
     /**
@@ -301,18 +296,14 @@ contract MARVEL is ERC721, ERC721URIStorage, Pausable, Ownable {
     */
     function whitelistUserMinting(address _to, uint _id, string memory _name, string memory _uri) public {
         require(!publicSale, "Can't mint when public sale is active");
-        if (whitelistedMintedNFTs < whiteListedLimit) {
-            if (whiteListedUsers[msg.sender]) {
-                safeMint(_to, _id, _name, _uri);
-                whitelistedMintedNFTs += 1;
-            }
-            else {
-                revert notWhitelistedUser("Not a whitelisted user");
-            }
-        }
-        else {
+        if (whitelistedMintedNFTs >= whiteListedLimit) {
             revert whitelistedUserLimit("Whitelisted user minting limit is reached");
         }
+        if (!whiteListedUsers[msg.sender]) {
+            revert notWhitelistedUser("Not a whitelisted user");
+        }
+        safeMint(_to, _id, _name, _uri);
+        whitelistedMintedNFTs += 1;
     }
 
     /**
@@ -326,18 +317,14 @@ contract MARVEL is ERC721, ERC721URIStorage, Pausable, Ownable {
     * Public minting limit should not be reached.
     */
     function publicMinting(address _to, uint _id, string memory _name, string memory _uri) public {
-        if (publicMintedNFTs < publicLimit) {
-            if (publicSale) {
-                safeMint(_to, _id, _name, _uri);
-                publicMintedNFTs += 1;
-            }
-            else {
-                revert publicSaleStatus("Public sale is not active");
-            }
-        }
-        else {
+        if (publicMintedNFTs >= publicLimit) {
             revert publicMintLimit("Public minting limit is reached");
         }
+        if (!publicSale) {
+            revert publicSaleStatus("Public sale is not active");
+        }
+        safeMint(_to, _id, _name, _uri);
+        publicMintedNFTs += 1;
     }
 
     /**
@@ -351,18 +338,14 @@ contract MARVEL is ERC721, ERC721URIStorage, Pausable, Ownable {
     * Sender should be the whitelisted admin.
     */
     function platformMinting(address _to, uint _id, string memory _name, string memory _uri) public {
-        if(pltformMintindNFTs < platformLimit) {
-            if(whiteListedAdmins[msg.sender]) {
-                safeMint(_to, _id, _name, _uri);
-                pltformMintindNFTs += 1;
-            }
-            else {
-                revert notWhitelistedAdmin("Not a whitelisted admin");
-            }
-        }
-        else {
+        if(pltformMintindNFTs >= platformLimit) {
             revert platformMintLimit("Platform minting limit is reached");
         }
+        if(!whiteListedAdmins[msg.sender]) {
+            revert notWhitelistedAdmin("Not a whitelisted admin");
+        }
+        safeMint(_to, _id, _name, _uri);
+        pltformMintindNFTs += 1;
     }
 
     /**
