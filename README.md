@@ -2,17 +2,17 @@
 
 ## Opensea NFTs Collection Link :
 
-``` https://testnets.opensea.io/Marvel_Cinematic-Universe ```
+``` https://testnets.opensea.io/Marvel-Cinematic-Universe_Weapons ```
 
 ## Wallet Address :
 
-``` 0xb83384A28DA9aB123dD397BC3C08CD8cC94a12EB ```
+``` 0x393adDb386269A8a0a156a81456334b9a906d356 ```
 
-## Contract Deployed on: Rinkeby Testnet
+## Contract Deployed on: Goerli Testnet
 
 ## Contract Address :
 
-``` 0xDc9e0A24402287A48648524710B637F9De5F3473 ```
+``` 0x46605dBc05ccb583A36530885D0e2BeEe867125c ```
 
 ### Contract Requirements
 
